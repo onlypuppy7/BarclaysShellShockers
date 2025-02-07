@@ -2,7 +2,7 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      1.0.2
+// @version      1.0.3
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
@@ -16,7 +16,8 @@
 //This script is more of a template than a functioning tool. If you're modifying this, you can add a GUI to start!
 
 const objectModelURLs = [
-    "https://cdn.onlypuppy7.online/eggtest.glb"
+    "https://cdn.onlypuppy7.online/eggtest.glb",
+    "https://cdn.onlypuppy7.online/guntest3.glb"
     //put model urls here. glb format ONLY.
     //put replacements for anything EXCEPT maps here (eg egg (hats), guns, etc)
 ];
@@ -107,7 +108,7 @@ const mapModelURLs = [
 
         let hash = CryptoJS.SHA256(clientKeyJS).toString(CryptoJS.enc.Hex);
         let clientKeys;
-        onlineClientKeys = fetchTextContent("https://raw.githubusercontent.com/StateFarmNetwork/client-keys/main/barclays_"+hash+".json"); //credit: me :D
+        onlineClientKeys = fetchTextContent("https://raw.githubusercontent.com/StateFarmNetwork/client-keys/main/barclays_latest.json"); //credit: me :D
 
         if (onlineClientKeys == "value_undefined" || onlineClientKeys == null) {
             let userInput = prompt('Valid keys could not be retrieved online. Enter keys if you have them. Join the SFNetwork Discord server to generate keys! https://discord.gg/HYJG3jXVJF', '');
@@ -150,26 +151,41 @@ const mapModelURLs = [
             };
         };
         console.log(injectionString);
+        //ingame loop
+        modifyJS(H.SCENE+'.render',`window["${functionNames.retrieveFunctions}"]({${injectionString}},true)||${H.SCENE}.render`);
 
         //adding ours to the list
         let regex = `${H.loadMeshes}\\\([a-zA-Z$_,]+\\\)\\\{`;
         let match = new RegExp(regex).exec(js);
         console.log("loadMeshes regex", regex, match);
-        modifyJS(match[0],match[0]+`window["${functionNames.BARCLAYS}"](arguments);`);
+        modifyJS(match[0],match[0]+`window["${functionNames.BARCLAYS}"](arguments);window.ballsMaterial=o;`);
         //setting it to "" where it applies
         modifyJS(`addTask\(\);!`,`addTask\(\);[${H.rootUrl},${H.meshPath}]=window["${functionNames.setRootUrl}"](${H.rootUrl}, ${H.meshIdx}, ${H.meshPath}, arguments);console.log([${H.rootUrl},${H.meshPath}]);!`);
+        //logging extra models? (pointless)
+        // modifyJS(`;if("__root__"`,`;if (window["${functionNames.meshOnSuccess}"](${H.meshOnSuccess})) continue;if("__root__"`);
+
+        modifyJS(`,m\.isPickable`,`,window["${functionNames.meshOnSuccess}"](${H.meshOnSuccess}),m\.isPickable`);
 
         modifyJS("Not playing in iframe", "BARCLAYS ACTIVE!");
         // console.log(js);
         return js;
     };
 
-    createAnonFunction("retrieveFunctions",function(vars) { ss=vars ; F.BARCLAYS() });
-
     let meshNames = [];
+    let loadedMeshes = [];
 
+    createAnonFunction("retrieveFunctions", function(vars) {
+        ss = vars;
+        ss.SCENE.getMaterialByName("standard").alphaMode = 0;
+    });
     createAnonFunction("BARCLAYS", function(args) {
+        let scene = args[0];
+
+        window.SCENE = scene;
+        scene.getMaterialByName("standard").alphaMode = 0;
+
         meshNames = args[1];
+        loadedMeshes = [];
         window.globalArgs = args;
 
         function addMesh(meshName, array) {
@@ -201,5 +217,18 @@ const mapModelURLs = [
         console.log("BARCLAYS: setRootUrl", rootUrl, meshIdx, meshPath, meshName);
         
         return [rootUrl, meshPath];
+    });
+
+    createAnonFunction("meshOnSuccess", function(mesh2) {
+        console.log(mesh2.name, mesh2.material.alphaMode);
+        
+        mesh2.material.alphaMode = 0;
+
+        // let meshExists = loadedMeshes.includes(mesh2.name);
+
+        // if (meshExists) console.log("BARCLAYS: mesh already exists:", mesh2.name);
+        // else loadedMeshes.push(mesh2.name);
+        
+        // return meshExists;
     });
 })();
