@@ -2,13 +2,13 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      1.0.0
+// @version      1.0.1
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
 // @grant        none
 // @run-at       document-start
-// @icon         https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBVinVXDiU6RX7S3WI7Y8GfE5ajR3tUODdeQ&s
+// @icon         https://github.com/onlypuppy7/BarclaysShellShockers/blob/main/logo.png?raw=true
 // @require      https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // ==/UserScript==
 
