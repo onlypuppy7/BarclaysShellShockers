@@ -2,7 +2,7 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      1.0.1
+// @version      1.0.2
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
@@ -18,7 +18,6 @@
 const objectModelURLs = [
     "https://cdn.onlypuppy7.online/eggtest.glb"
     //put model urls here. glb format ONLY.
-    //add "prompt" to make it prompt.
     //put replacements for anything EXCEPT maps here (eg egg (hats), guns, etc)
 ];
 
