@@ -2,7 +2,7 @@
 
 function replaceMesh(sourceMesh, targetMesh) {
     if (sourceMesh && targetMesh) {
-        const vertexData = globalSS.L.BABYLON.VertexData.ExtractFromMesh(sourceMesh);
+        const vertexData = globalSS.ss.VertexData.ExtractFromMesh(sourceMesh);
 
         vertexData.applyToMesh(targetMesh);
 
@@ -12,7 +12,7 @@ function replaceMesh(sourceMesh, targetMesh) {
     };
 };
 
-globalSS.L.BABYLON.SceneLoader.ImportMesh(
+globalSS.ss.SceneLoader.ImportMesh(
     "", // Empty string imports all meshes
     "", // Empty root URL uses the path provided
     "https://cdn.onlypuppy7.online/blendertest3.glb", // Path to GLB file

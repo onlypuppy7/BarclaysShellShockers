@@ -2,117 +2,133 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      1.0.4
+// @version      1.1.0
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
 // @grant        none
 // @run-at       document-start
 // @icon         https://github.com/onlypuppy7/BarclaysShellShockers/blob/main/logo.png?raw=true
-// @require      https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
 // ==/UserScript==
 
 //This script is based off LibertyMutual by onlypuppy7
 //This script is more of a template than a functioning tool. If you're modifying this, you can add a GUI to start!
 
-const objectModelURLs = [
-    "https://cdn.onlypuppy7.online/blendertest2.glb",
-    // "https://cdn.onlypuppy7.online/guntest3.glb"
+
+const modelURLs = [
     //put model urls here. glb format ONLY.
-    //put replacements for anything EXCEPT maps here (eg egg (hats), guns, etc)
+    //put replacements for any model
+
+    //examples:
+    "https://cdn.onlypuppy7.online/blendertest3.glb", //makes the top hat WIDE
+    "https://cdn.onlypuppy7.online/guntest3.glb", //replaces crackshot with legacy crackshot
 ];
 
-const mapModelURLs = [
-    //these models are loaded in a different sequence, currently only consisting of ["map"]
-    //so to ensure the correct order, put any models that overwrite map models here
-    //same format as objects.
-];
-
-const removeModels = [
-    //put model names here to remove them from the game
-    //eg "egg", "gun_m24", "map"
-    "egg"
-];
-
-(function () {
-    // crackedshell is a script executor for chromebooks
-    let crackedShell = typeof $WEBSOCKET !== 'undefined';
-
-    let originalReplace = String.prototype.replace;
-
-    String.prototype.originalReplace = function() {
-        return originalReplace.apply(this, arguments);
-    };
-
-    //Credit for script injection code: AI. ChatGPT prompt: "tampermonkey script. how can i make it grab a javascript file as it's loaded. if it detects the javascript file, make it apply modifications to it via regex? using XMLHttpRequest"
-    //Credit for idea to use XMLHttpRequest: A3+++
-    const originalXHROpen = XMLHttpRequest.prototype.open;
-    const originalXHRGetResponse = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'response');
-    let shellshockjs
-    XMLHttpRequest.prototype.open = function(...args) {
-        const url = args[1];
-        if (url && url.includes("js/shellshock.js")) {
-            shellshockjs = this;
+const BARCLAYS = {
+    modelURLs: [],
+    log: function (...args) { //yeah, i got inspired. what about it?
+        console.log(
+            "%c%s",
+            `color: white; font-weight: bold; background:rgb(0, 85, 128); padding: 2px 6px; border-radius: 5px; margin-right: 5px;`,
+            `Barclay's`,
+            ...args
+        );
+    },
+    init: function () { //setup the script injection. separated out to enable users to put the injection code into their own scripts with different loading mechanisms.
+        let originalReplace = String.prototype.replace;
+    
+        String.prototype.originalReplace = function() {
+            return originalReplace.apply(this, arguments);
         };
-        originalXHROpen.apply(this, args);
-    };
-    Object.defineProperty(XMLHttpRequest.prototype, 'response', {
-        get: function() {
-            if (this===shellshockjs) {
-                return applyBarclays(originalXHRGetResponse.get.call(this));
-            };
-            return originalXHRGetResponse.get.call(this);
-        }
-    });
-    //VAR STUFF
-    let F=[];
-    let H={};
-    let functionNames=[];
 
-    //scrambled... geddit????
-    const getScrambled=function(){return Array.from({length: 10}, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('')}
-    const createAnonFunction=function(name,func){
-        const funcName=getScrambled();
-        window[funcName]=func;
-        F[name]=window[funcName];
-        functionNames[name]=funcName
-    };
-    const findKeyWithProperty = function(obj, propertyToFind) {
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                if (key === propertyToFind) {
-                    return [key];
-                } else if (
-                    typeof obj[key] === 'object' &&
-                    obj[key] !== null &&
-                    obj[key].hasOwnProperty(propertyToFind)
-                ) {
-                    return key;
+        const originalXHROpen = XMLHttpRequest.prototype.open;
+        const originalXHRGetResponse = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'response');
+        let shellshockjs
+        XMLHttpRequest.prototype.open = function(...args) {
+            const url = args[1];
+            if (url && url.includes("js/shellshock.js")) {
+                shellshockjs = this;
+            };
+            originalXHROpen.apply(this, args);
+        };
+        Object.defineProperty(XMLHttpRequest.prototype, 'response', {
+            get: function() {
+                if (this===shellshockjs) {
+                    BARCLAYS.log("shellshock.js intercepted");
+                    return BARCLAYS.applyBarclays(originalXHRGetResponse.get.call(this));
+                };
+                return originalXHRGetResponse.get.call(this);
+            }
+        });
+    },
+    applyBarclays: function (js) {
+        //VAR STUFF
+        let F=[];
+        let H={};
+        let functionNames=[];
+    
+        //scrambled... geddit????
+        const getScrambled=function(){return Array.from({length: 10}, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('')}
+        const createAnonFunction=function(name,func){
+            const funcName=getScrambled();
+            window[funcName]=func;
+            F[name]=window[funcName];
+            functionNames[name]=funcName
+        };
+        
+        const fetchTextContent = function(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, false); // make the request synchronous
+            xhr.send();
+            if (xhr.status === 200) {
+                return xhr.responseText;
+            } else {
+                console.error("Error fetching text content. Status:", xhr.status);
+                return null;
+            };
+        };
+    
+        createAnonFunction("BARCLAYS", function(ss) {
+            BARCLAYS.log("BARCLAYS ACTIVE!");
+            window.globalBarclays = ss;
+    
+            function replaceMesh(sourceMesh, targetMesh) {
+                if (sourceMesh && targetMesh) {
+                    const vertexData = ss.VertexData.ExtractFromMesh(sourceMesh);
+            
+                    vertexData.applyToMesh(targetMesh);
+            
+                    BARCLAYS.log("Mesh geometry replaced successfully!", sourceMesh.id);
+                } else {
+                    console.error("One of the meshes was not found!");
                 };
             };
-        };
-        // Property not found
-        return null;
-    };
-    const fetchTextContent = function(url) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, false); // Make the request synchronous
-        xhr.send();
-        if (xhr.status === 200) {
-            return xhr.responseText;
-        } else {
-            console.error("Error fetching text content. Status:", xhr.status);
-            return null;
-        };
-    };
+            
+            modelURLs.forEach(function(url) {
+                ss.SceneLoader.ImportMesh(
+                    "", // Empty string imports all meshes
+                    "", // Empty root URL uses the path provided
+                    url, // Path to GLB file
+                    undefined, // Scene to import into
+                    function (meshes) {
+                        BARCLAYS.log("Meshes loaded:", meshes.map(mesh => mesh.id));
+                        // Manipulate meshes if needed
+                        for (var m = 0; m < meshes.length; m++) {
+                            var mesh2 = meshes[m];
+                            mesh2.setEnabled(false);
+                            mesh2.isPickable = false;
+                
+                            let meshInGlobalScene = ss.globalScene.getMeshByID(mesh2.id);
+                
+                            if (meshInGlobalScene) {
+                                replaceMesh(mesh2, meshInGlobalScene);
+                            };
+                        };
+                    }
+                );
+            });
+        });
 
-    const applyBarclays = function(js) {
-        // support crackedshell's harsh rewriting system
-        // more info @ https://github.com/VillainsRule/CrackedShell
-        let clientKeyJS = js;
-        if (crackedShell) clientKeyJS = fetchTextContent('/js/shellshock.og.js');
-
-        let hash = CryptoJS.SHA256(clientKeyJS).toString(CryptoJS.enc.Hex);
         let clientKeys;
         onlineClientKeys = fetchTextContent("https://raw.githubusercontent.com/StateFarmNetwork/client-keys/main/barclays_latest.json"); //credit: me :D
 
@@ -129,7 +145,7 @@ const removeModels = [
         };
 
         H = clientKeys.vars;
-        console.log(H);
+        BARCLAYS.log(H);
 
         let injectionString="";
         
@@ -137,13 +153,13 @@ const removeModels = [
             let oldJS = js;
             js = js.originalReplace(find,replace);
             if (oldJS !== js) {
-                console.log("%cReplacement successful! Injected code: "+replace, 'color: green; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
+                BARCLAYS.log("%cReplacement successful! Injected code: "+replace, 'color: green; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
             } else {
-                console.log("%cReplacement failed! Attempted to replace "+find+" with: "+replace, 'color: red; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
+                BARCLAYS.log("%cReplacement failed! Attempted to replace "+find+" with: "+replace, 'color: red; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
             };
         };
 
-        console.log('%cATTEMPTING TO START BARCLAYS', 'color: magenta; font-weight: bold; font-size: 1.5em; text-decoration: underline;');
+        BARCLAYS.log('%cATTEMPTING TO START BARCLAYS', 'color: magenta; font-weight: bold; font-size: 1.5em; text-decoration: underline;');
         const variableNameRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/; //prevent adding spooky code
         for (let name in H) {
             deobf = H[name];
@@ -151,95 +167,19 @@ const removeModels = [
                 injectionString = `${injectionString}${name}: (() => { try { return ${deobf}; } catch (error) { return "value_undefined"; } })(),`;
             } else {
                 alert("Message from the Barclays Devs: WARNING! The keys inputted contain non-variable characters! There is a possibility that this could run code unintended by the Barclays team, although possibly there is also a mistake. Do NOT proceed with using this, and report to the Barclays developers what is printed in the console.");
-                console.log("REPORT THIS IN THE DISCORD SERVER:", clientKeys);
+                BARCLAYS.log("REPORT THIS IN THE DISCORD SERVER:", clientKeys);
                 const crashplease = "balls";
                 crashplease = "balls2";
             };
         };
-        console.log(injectionString);
-        //ingame loop
-        modifyJS(H.SCENE+'.render',`window["${functionNames.retrieveFunctions}"]({${injectionString}},true)||${H.SCENE}.render`);
+        BARCLAYS.log("Barclay's injectionString:", injectionString);
 
-        //adding ours to the list
-        let regex = `${H.loadMeshes}\\\([a-zA-Z$_,]+\\\)\\\{`;
-        let match = new RegExp(regex).exec(js);
-        console.log("loadMeshes regex", regex, match);
-        modifyJS(match[0],match[0]+`window["${functionNames.BARCLAYS}"](arguments);window.ballsMaterial=o;`);
-        //setting it to "" where it applies
-        modifyJS(`addTask\(\);!`,`addTask\(\);[${H.rootUrl},${H.meshPath}]=window["${functionNames.setRootUrl}"](${H.rootUrl}, ${H.meshIdx}, ${H.meshPath}, arguments);console.log([${H.rootUrl},${H.meshPath}]);!`);
-        //logging extra models? (pointless)
-        // modifyJS(`;if("__root__"`,`;if (window["${functionNames.meshOnSuccess}"](${H.meshOnSuccess})) continue;if("__root__"`);
+        modifyJS(`"object meshes loaded"),`, `"object meshes loaded"),window["${functionNames.BARCLAYS}"]({${injectionString}}),`);
 
-        modifyJS(`,m\.isPickable`,`,window["${functionNames.meshOnSuccess}"](${H.meshOnSuccess}),m\.isPickable`);
-
-        modifyJS("Not playing in iframe", "BARCLAYS ACTIVE!");
-        // console.log(js);
+        // BARCLAYS.log(js);
         return js;
-    };
+    },
+};
 
-    let meshNames = [];
-    let loadedMeshes = [];
-
-    createAnonFunction("retrieveFunctions", function(vars) {
-        ss = vars;
-        ss.SCENE.getMaterialByName("standard").alphaMode = 0;
-    });
-    createAnonFunction("BARCLAYS", function(args) {
-        let scene = args[0];
-
-        window.SCENE = scene;
-        scene.getMaterialByName("standard").alphaMode = 0;
-
-        meshNames = args[1];
-        loadedMeshes = [];
-        window.globalArgs = args;
-
-        function addMesh(meshName, array) {
-            // meshName = meshName.includes(".") ? meshName.substring(0, meshName.lastIndexOf(".")) : meshName;
-            array.unshift(meshName);
-        };
-
-        removeModels.forEach(item => {
-            let idx = meshNames.indexOf(item);
-            if (idx !== -1) meshNames.splice(idx, 1);
-        });
-        
-        if (meshNames.includes("map")) {
-            mapModelURLs.forEach(item => addMesh(item, meshNames));
-        } else {
-            objectModelURLs.forEach(item => addMesh(item, meshNames));
-        };
-
-        console.log("BARCLAYS: BARCLAYS", meshNames);
-    });
-
-    createAnonFunction("setRootUrl", function(rootUrl, meshIdx, meshPath, args) {
-        let meshName = meshNames[meshIdx];
-
-        if (meshName.includes("://")) rootUrl = "";
-
-        function removeGLBExtension(fileName) {
-            const regex = /(\.[a-z0-9]+)\.glb(\?.*)?$/i;
-            return fileName.replace(regex, '$1$2');
-        };
-
-        meshPath = removeGLBExtension(meshPath);
-
-        console.log("BARCLAYS: setRootUrl", rootUrl, meshIdx, meshPath, meshName);
-        
-        return [rootUrl, meshPath];
-    });
-
-    createAnonFunction("meshOnSuccess", function(mesh2) {
-        console.log(mesh2.name, mesh2.material.alphaMode);
-        
-        mesh2.material.alphaMode = 0;
-
-        // let meshExists = loadedMeshes.includes(mesh2.name);
-
-        // if (meshExists) console.log("BARCLAYS: mesh already exists:", mesh2.name);
-        // else loadedMeshes.push(mesh2.name);
-        
-        // return meshExists;
-    });
-})();
+BARCLAYS.modelURLs = modelURLs;
+BARCLAYS.init();
