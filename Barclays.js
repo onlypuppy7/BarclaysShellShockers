@@ -2,7 +2,7 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      1.0.3
+// @version      1.0.4
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
@@ -16,8 +16,8 @@
 //This script is more of a template than a functioning tool. If you're modifying this, you can add a GUI to start!
 
 const objectModelURLs = [
-    "https://cdn.onlypuppy7.online/eggtest.glb",
-    "https://cdn.onlypuppy7.online/guntest3.glb"
+    "https://cdn.onlypuppy7.online/blendertest2.glb",
+    // "https://cdn.onlypuppy7.online/guntest3.glb"
     //put model urls here. glb format ONLY.
     //put replacements for anything EXCEPT maps here (eg egg (hats), guns, etc)
 ];
@@ -26,6 +26,12 @@ const mapModelURLs = [
     //these models are loaded in a different sequence, currently only consisting of ["map"]
     //so to ensure the correct order, put any models that overwrite map models here
     //same format as objects.
+];
+
+const removeModels = [
+    //put model names here to remove them from the game
+    //eg "egg", "gun_m24", "map"
+    "egg"
 ];
 
 (function () {
@@ -192,6 +198,11 @@ const mapModelURLs = [
             // meshName = meshName.includes(".") ? meshName.substring(0, meshName.lastIndexOf(".")) : meshName;
             array.unshift(meshName);
         };
+
+        removeModels.forEach(item => {
+            let idx = meshNames.indexOf(item);
+            if (idx !== -1) meshNames.splice(idx, 1);
+        });
         
         if (meshNames.includes("map")) {
             mapModelURLs.forEach(item => addMesh(item, meshNames));
