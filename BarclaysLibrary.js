@@ -89,7 +89,7 @@ const BARCLAYS = {
                 };
             };
             
-            modelURLs.forEach(function(url) {
+            BARCLAYS.modelURLs.forEach(function(url) {
                 BARCLAYS.log("Loading model from URL:", url);
                 ss.SceneLoader.ImportMesh(
                     "", // Empty string imports all meshes
