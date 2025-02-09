@@ -2,9 +2,10 @@
 // @name         Barclay's Library
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @grant        none
-// @version      1.0.1
+// @version      1.0.2
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - library that does the heavy lifting
+// @match        *://*/*
 // ==/UserScript==
 
 //this library is based off LibertyMutual by onlypuppy7
