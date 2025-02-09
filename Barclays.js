@@ -10,9 +10,6 @@
 // @run-at       document-start
 // @icon         https://github.com/onlypuppy7/BarclaysShellShockers/blob/main/logo.png?raw=true
 
-// @downloadURL  https://update.greasyfork.org/scripts/526219/user.js
-// @updateURL    https://update.greasyfork.org/scripts/526219/meta.js
-
 // ==/UserScript==
 
 // ==UserScript==
