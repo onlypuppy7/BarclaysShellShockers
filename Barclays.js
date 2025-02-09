@@ -2,7 +2,7 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      2.0.0
+// @version      2.0.1
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
@@ -13,7 +13,7 @@
 // @downloadURL  https://update.greasyfork.org/scripts/526219/user.js
 // @updateURL    https://update.greasyfork.org/scripts/526219/meta.js
 
-// @require      https://update.greasyfork.org/scripts/526336/1534125/Barclay%27s%20Library.js
+// @require      https://update.greasyfork.org/scripts/526336/user.js
 // ==/UserScript==
 
 //this script is a template for using the Barclays library to import models into Shell Shockers
