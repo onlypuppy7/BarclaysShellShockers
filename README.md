@@ -5,7 +5,7 @@
 
 ## How to use
 
-1. **Grab the game's original model files as reference.**
+### **Grab the game's original model files as reference.**
 
 > NOTE: The old URLs for models are OUTDATED!
 >
@@ -18,15 +18,15 @@
 > https://shellshock.io/models/full/egg.glb  
 > https://shellshock.io/models/full/gun_m24.glb  
 
-2. **Create models in Blender with names that overwrite the original's.**
+### **Create models in Blender with names that overwrite the original's.**
    
 > They MUST match.
 
-3. **Upload to some file hoster.**
+### **Upload to some file hoster.**
    
 > GitHub usually works best for this type of thing.
 
-4. Add the link to the arrays at the beginning of the script.
+### **Add the link to the arrays at the beginning of the script.**
 
 > You can add multiple models if desired, as well as many URLs as you like. The order of execution is from first to last, so GLBs that have models that target the same meshes as ones prior will overwrite the previous data.
 

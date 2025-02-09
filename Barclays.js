@@ -2,189 +2,51 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      1.1.1
+// @version      2.0.0
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
 // @grant        none
 // @run-at       document-start
 // @icon         https://github.com/onlypuppy7/BarclaysShellShockers/blob/main/logo.png?raw=true
+
+// @downloadURL  https://update.greasyfork.org/scripts/526219/user.js
+// @updateURL    https://update.greasyfork.org/scripts/526219/meta.js
+
+// @require      https://update.greasyfork.org/scripts/526336/1534125/Barclay%27s%20Library.js
 // ==/UserScript==
 
-const modelURLs = [
+//this script is a template for using the Barclays library to import models into Shell Shockers
+
+BARCLAYS.modelURLs = [
     //put model urls here. glb format ONLY.
-    //put replacements for any model
+    //please refer to the library's documentation for more information
 
     //examples:
-    "https://cdn.onlypuppy7.online/hattestWide2.glb", //makes the top hat WIDE
+    // "https://cdn.onlypuppy7.online/hattestWide2.glb", //makes the top hat WIDE
     // "https://cdn.onlypuppy7.online/guntest3.glb", //replaces crackshot with legacy crackshot
     // "https://cdn.onlypuppy7.online/blendertest7.glb", //replaces castle brick with the blender default cube because why not (screws up lightmap)
+    "https://cdn.onlypuppy7.online/eggmodeltest.glb", //
+
+    // "/models/full/egg.glb", //replaces the replaced egg with the default egg, useful for reverting changes
 ];
 
-const BARCLAYS = {
-    modelURLs: [],
-    log: function (...args) { //yeah, i got inspired. what about it?
-        console.log(
-            "%c%s",
-            `color: white; font-weight: bold; background:rgb(0, 85, 128); padding: 2px 6px; border-radius: 5px; margin-right: 5px;`,
-            `Barclay's`,
-            ...args
-        );
-    },
-    init: function () { //setup the script injection. separated out to enable users to put the injection code into their own scripts with different loading mechanisms.
-        let originalReplace = String.prototype.replace;
-    
-        String.prototype.originalReplace = function() {
-            return originalReplace.apply(this, arguments);
-        };
-
-        const originalXHROpen = XMLHttpRequest.prototype.open;
-        const originalXHRGetResponse = Object.getOwnPropertyDescriptor(XMLHttpRequest.prototype, 'response');
-        let shellshockjs
-        XMLHttpRequest.prototype.open = function(...args) {
-            const url = args[1];
-            if (url && url.includes("js/shellshock.js")) {
-                shellshockjs = this;
-            };
-            originalXHROpen.apply(this, args);
-        };
-        Object.defineProperty(XMLHttpRequest.prototype, 'response', {
-            get: function() {
-                if (this===shellshockjs) {
-                    BARCLAYS.log("shellshock.js intercepted");
-                    return BARCLAYS.applyBarclays(originalXHRGetResponse.get.call(this));
-                };
-                return originalXHRGetResponse.get.call(this);
-            }
-        });
-    },
-    applyBarclays: function (js) {
-        //VAR STUFF
-        let F=[];
-        let H={};
-        let functionNames=[];
-    
-        //scrambled... geddit????
-        const getScrambled=function(){return Array.from({length: 10}, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('')}
-        const createAnonFunction=function(name,func){
-            const funcName=getScrambled();
-            window[funcName]=func;
-            F[name]=window[funcName];
-            functionNames[name]=funcName
-        };
-        
-        const fetchTextContent = function(url) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, false); // make the request synchronous
-            xhr.send();
-            if (xhr.status === 200) {
-                return xhr.responseText;
-            } else {
-                console.error("Error fetching text content. Status:", xhr.status);
-                return null;
-            };
-        };
-    
-        createAnonFunction("BARCLAYS", function(ss) {
-            BARCLAYS.log("BARCLAYS ACTIVE!");
-            window.globalBarclays = ss;
-    
-            function replaceMesh(sourceMesh, targetMesh) {
-                if (sourceMesh && targetMesh) {
-                    const vertexData = ss.VertexData.ExtractFromMesh(sourceMesh);
-            
-                    vertexData.applyToMesh(targetMesh);
-            
-                    BARCLAYS.log("Mesh geometry replaced successfully!", sourceMesh.id);
-                } else {
-                    console.error("One of the meshes was not found!");
-                };
-            };
-            
-            modelURLs.forEach(function(url) {
-                BARCLAYS.log("Loading model from URL:", url);
-                ss.SceneLoader.ImportMesh(
-                    "", // Empty string imports all meshes
-                    "", // Empty root URL uses the path provided
-                    url, // Path to GLB file
-                    undefined, // Scene to import into
-                    function (meshes) {
-                        BARCLAYS.log(
-                            "Meshes loaded:",
-                            meshes
-                                .filter(mesh => mesh.id !== "__root__")
-                                .map(mesh => mesh.id)
-                        );
-                        for (var m = 0; m < meshes.length; m++) {
-                            var mesh2 = meshes[m];
-                            if (mesh2.id !== "__root__") {
-                                mesh2.setEnabled(false);
-                                mesh2.isPickable = false;
-                    
-                                let meshInGlobalScene = ss.globalScene.getMeshByID(mesh2.id);
-                    
-                                if (meshInGlobalScene) {
-                                    replaceMesh(mesh2, meshInGlobalScene);
-                                };
-                            };
-                        };
-                        BARCLAYS.log("Meshes replaced successfully!");
-                    }
-                );
-            });
-        });
-
-        let clientKeys;
-        onlineClientKeys = fetchTextContent("https://raw.githubusercontent.com/StateFarmNetwork/client-keys/main/barclays_latest.json"); //credit: me :D
-
-        if (onlineClientKeys == "value_undefined" || onlineClientKeys == null) {
-            let userInput = prompt('Valid keys could not be retrieved online. Enter keys if you have them. Join the SFNetwork Discord server to generate keys! https://discord.gg/HYJG3jXVJF', '');
-            if (userInput !== null && userInput !== '') {
-                alert('Aight, let\'s try this. If it is invalid, it will just crash.');
-                clientKeys = JSON.parse(userInput);
-            } else {
-                alert('You did not enter anything, this is gonna crash lmao.');
-            };
-        } else {
-            clientKeys = JSON.parse(onlineClientKeys);
-        };
-
-        H = clientKeys.vars;
-        BARCLAYS.log(H);
-
-        let injectionString="";
-        
-        const modifyJS = function(find,replace) {
-            let oldJS = js;
-            js = js.originalReplace(find,replace);
-            if (oldJS !== js) {
-                BARCLAYS.log("%cReplacement successful! Injected code: "+replace, 'color: green; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
-            } else {
-                BARCLAYS.log("%cReplacement failed! Attempted to replace "+find+" with: "+replace, 'color: red; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
-            };
-        };
-
-        BARCLAYS.log('%cATTEMPTING TO START BARCLAYS', 'color: magenta; font-weight: bold; font-size: 1.5em; text-decoration: underline;');
-        const variableNameRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/; //prevent adding spooky code
-        for (let name in H) {
-            deobf = H[name];
-            if (variableNameRegex.test(deobf)) {
-                injectionString = `${injectionString}${name}: (() => { try { return ${deobf}; } catch (error) { return "value_undefined"; } })(),`;
-            } else {
-                alert("Message from the Barclays Devs: WARNING! The keys inputted contain non-variable characters! There is a possibility that this could run code unintended by the Barclays team, although possibly there is also a mistake. Do NOT proceed with using this, and report to the Barclays developers what is printed in the console.");
-                BARCLAYS.log("REPORT THIS IN THE DISCORD SERVER:", clientKeys);
-                const crashplease = "balls";
-                crashplease = "balls2";
-            };
-        };
-        BARCLAYS.log("Barclay's injectionString:", injectionString);
-
-        modifyJS(`"object meshes loaded"),`, `"object meshes loaded"),window["${functionNames.BARCLAYS}"]({${injectionString}}),`);
-
-        // BARCLAYS.log(js);
-        return js;
-    },
-};
-
-BARCLAYS.modelURLs = modelURLs;
+//as this script has no injection mechanism, we use the library's built in one
 BARCLAYS.init();
+
+//just to make it obvious
+BARCLAYS.log("Script started.");
+
+//if at a stage you would like to make more model changes, you can run code like this:
+/* //(uncomment to use)
+BARCLAYS.replaceModels([
+    "https://link.to/your/model.glb",
+]);
+*/
+
+//if you need to restore the original models, you can run this:
+// BARCLAYS.restoreModels();
+//note: dont run this over and over again, it will cause performance issues
+
+//uncomment to expose the BARCLAYS object to the console/window
+// window.BARCLAYS = BARCLAYS;
