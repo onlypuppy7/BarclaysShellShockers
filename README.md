@@ -35,7 +35,7 @@
 Add this line to the userdata meta, it will initiate the Barclay's library.
 
 ```
-// @require      https://update.greasyfork.org/scripts/526336/1534125/Barclay%27s%20Library.js
+// @require      https://update.greasyfork.org/scripts/526336/user.js
 ```
 
 > If you don't like the idea of adding that, or you have an environment where you can't add libraries, then the code from the link can safely just be inserted into your code.
