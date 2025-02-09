@@ -1,25 +1,13 @@
 // ==UserScript==
-// @name         Shell Shockers Model Injector: Barclay's
+// @name         Barclay's Library
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
-// @license      GPL-3.0
-// @version      1.1.1
-// @author       onlypuppy7
-// @description  Import whatever model URLs you need - template and example code
-// @match        https://shellshock.io/*
 // @grant        none
-// @run-at       document-start
-// @icon         https://github.com/onlypuppy7/BarclaysShellShockers/blob/main/logo.png?raw=true
+// @version      1.0.0
+// @author       onlypuppy7
+// @description  Import whatever model URLs you need - library that does the heavy lifting
 // ==/UserScript==
 
-const modelURLs = [
-    //put model urls here. glb format ONLY.
-    //put replacements for any model
-
-    //examples:
-    "https://cdn.onlypuppy7.online/hattestWide2.glb", //makes the top hat WIDE
-    // "https://cdn.onlypuppy7.online/guntest3.glb", //replaces crackshot with legacy crackshot
-    // "https://cdn.onlypuppy7.online/blendertest7.glb", //replaces castle brick with the blender default cube because why not (screws up lightmap)
-];
+//this library is based off LibertyMutual by onlypuppy7
 
 const BARCLAYS = {
     modelURLs: [],
@@ -185,6 +173,3 @@ const BARCLAYS = {
         return js;
     },
 };
-
-BARCLAYS.modelURLs = modelURLs;
-BARCLAYS.init();
