@@ -16,8 +16,10 @@
 // @require      https://update.greasyfork.org/scripts/526336/user.js?version=2.1.1
 // ==/UserScript==
 
-//NOTE: to make sure the Barclay's Library updates with your script, you must update the version number in the @require line above
+//NOTE: to make sure the Barclay's Library updates with your script, you must update the ?version parameter in the @require line above
 //  -> otherwise userscript managers will not update the library and keep using the cached version
+//  -> the actual thing you put is not important, just make sure it is different from the previous version
+//  -> this is a limitation of userscript managers, not the library
 
 //this script is a template for using the Barclays library to import models into Shell Shockers
 //please refer to the library's documentation for more information
@@ -40,7 +42,7 @@ BARCLAYS.modelURLs = [
 BARCLAYS.init();
 
 //just to make it obvious
-BARCLAYS.log("Script started.");
+BARCLAYS.log("Example script started.");
 
 //if at a stage you would like to make more model changes, you can run code like this:
 /* //(uncomment to use)

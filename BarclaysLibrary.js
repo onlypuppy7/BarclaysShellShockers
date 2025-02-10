@@ -2,7 +2,7 @@
 // @name         Barclay's Library
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @grant        none
-// @version      1.1.0
+// @version      1.1.1
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - library that does the heavy lifting
 // @match        *://*/*
@@ -109,13 +109,13 @@ const BARCLAYS = {
                 let oldJS = js;
                 js = js.originalReplace(find,replace);
                 if (oldJS !== js) {
-                    BARCLAYS.log("%cReplacement successful! Injected code: "+replace, 'color: green; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
+                    console.log("%c[BARCLAYS] Replacement successful! Injected code: "+replace, 'color: green; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
                 } else {
-                    BARCLAYS.log("%cReplacement failed! Attempted to replace "+find+" with: "+replace, 'color: red; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
+                    console.log("%c[BARCLAYS] Replacement failed! Attempted to replace "+find+" with: "+replace, 'color: red; font-weight: bold; font-size: 0.6em; text-decoration: italic;');
                 };
             };
     
-            BARCLAYS.log('%cATTEMPTING TO START BARCLAYS', 'color: magenta; font-weight: bold; font-size: 1.5em; text-decoration: underline;');
+            BARCLAYS.log('%c[BARCLAYS] ATTEMPTING TO START BARCLAYS', 'color: magenta; font-weight: bold; font-size: 1.5em; text-decoration: underline;');
             const variableNameRegex = /^[a-zA-Z0-9_$,"]*$/; //prevent adding spooky code
             for (let name in BARCLAYS.H) {
                 deobf = BARCLAYS.H[name];
