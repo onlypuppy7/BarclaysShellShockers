@@ -229,3 +229,5 @@ const BARCLAYS = {
         BARCLAYS.replaceModels(modelURLs, true);
     },
 };
+
+BARCLAYS.log("Barclay's Library loaded. Built by onlypuppy7 :>");
