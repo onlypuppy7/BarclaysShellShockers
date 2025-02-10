@@ -2,7 +2,7 @@
 // @name         Barclay's Library
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @grant        none
-// @version      1.0.2
+// @version      1.1.0
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - library that does the heavy lifting
 // @match        *://*/*
@@ -165,23 +165,46 @@ const BARCLAYS = {
                 "", // Empty root URL uses the path provided
                 url, // Path to GLB file
                 undefined, // Scene to import into
-                function (meshes) {
+                function (meshes, particleSystems, skeletons, animationGroups) {
                     BARCLAYS.log(
-                        "Meshes loaded:",
+                        "meshes loaded:",
                         meshes
                             .filter(mesh => mesh.id !== "__root__")
                             .map(mesh => mesh.id)
                     );
+                    console.log("particleSystems loaded:", particleSystems);
+                    console.log("skeletons loaded:", skeletons);
+                    console.log("animationGroups loaded:", animationGroups);
+
                     for (var m = 0; m < meshes.length; m++) {
                         var mesh2 = meshes[m];
                         if (mesh2.id !== "__root__") {
                             mesh2.setEnabled(false);
                             mesh2.isPickable = false;
+    
+                            mesh2.animations = animationGroups;
                 
                             let meshInGlobalScene = BARCLAYS.ss.globalScene.getMeshByID(mesh2.id);
                 
                             if (meshInGlobalScene) {
                                 replaceMesh(mesh2, meshInGlobalScene);
+    
+                                mesh2.animations.forEach((anim, index) => {
+                                    let animName = anim.name;
+                                    let animInGlobalScene = meshInGlobalScene.getAnimationByName(animName);
+                
+                                    if (animInGlobalScene) {
+                                        let tempTargeted = anim._targetedAnimations;
+                
+                                        tempTargeted.forEach((targeted, index) => {
+                                            tempTargeted[index].target = targeted.target;
+                                        });
+                
+                                        animInGlobalScene._targetedAnimations = tempTargeted;
+                
+                                        BARCLAYS.log(`Animation ${index + 1} (${animName}) replaced successfully!`);
+                                    };
+                                });
                             };
 
                             mesh2.dispose(false, true);
