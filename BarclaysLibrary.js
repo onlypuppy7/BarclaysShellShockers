@@ -2,7 +2,7 @@
 // @name         Barclay's Library
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @grant        none
-// @version      1.1.1
+// @version      1.1.2
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - library that does the heavy lifting
 // @match        *://*/*
@@ -130,7 +130,7 @@ const BARCLAYS = {
             };
             BARCLAYS.log("Barclay's injectionString:", injectionString);
     
-            modifyJS(`"object meshes loaded"),`, `"object meshes loaded"),window["${functionNames.BARCLAYS}"]({${injectionString}}),`);
+            modifyJS(`"Object meshes loaded"),`, `"Object meshes loaded"),window["${functionNames.BARCLAYS}"]({${injectionString}}),`);
     
             // BARCLAYS.log(js);
             return js;

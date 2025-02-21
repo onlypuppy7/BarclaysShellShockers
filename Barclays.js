@@ -2,7 +2,7 @@
 // @name         Shell Shockers Model Injector: Barclay's
 // @namespace    https://github.com/onlypuppy7/BarclaysShellShockers/
 // @license      GPL-3.0
-// @version      2.1.2
+// @version      2.1.3
 // @author       onlypuppy7
 // @description  Import whatever model URLs you need - template and example code
 // @match        https://shellshock.io/*
@@ -13,7 +13,7 @@
 // @downloadURL  https://update.greasyfork.org/scripts/526219/user.js
 // @updateURL    https://update.greasyfork.org/scripts/526219/meta.js
 
-// @require      https://update.greasyfork.org/scripts/526336/user.js?v=2.1.2
+// @require      https://update.greasyfork.org/scripts/526336/user.js?v=2.1.3
 // ==/UserScript==
 
 //NOTE: to make sure the Barclay's Library updates with your script, you must update the ?v=[version] parameter in the @require line above
